@@ -14,6 +14,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -29,14 +30,16 @@ public class libGDXRoguelike extends ApplicationAdapter implements InputProcesso
     int SCREEN_HEIGHT = 0;
     SpriteBatch batch;
     TextureAtlas textureAtlas;
-    Sprite playerSprite;
-    Player player;
+    Sprite myPlayerSprite;
+    Player myPlayer;
     TextureRegion textureRegion;
     int speed = 80;
-    int calculatedWidth =0;
-    int calculatedHeight =0;
+    int calculatedWidth = 0;
+    int calculatedHeight = 0;
 
     FirebaseInterface _FBIC;
+    Cursor cursor;
+    public static boolean lockOnListReadFromDB = false;
 
     public libGDXRoguelike(FirebaseInterface FBIC) {
         _FBIC = FBIC;
@@ -44,8 +47,9 @@ public class libGDXRoguelike extends ApplicationAdapter implements InputProcesso
 
     @Override
     public void resize(int width, int height) {
-       // viewport.update(width, height);
+        // viewport.update(width, height);
     }
+
     @Override
     public void create() {
         SCREEN_WIDTH = Gdx.graphics.getWidth();
@@ -56,116 +60,139 @@ public class libGDXRoguelike extends ApplicationAdapter implements InputProcesso
         tiledMap = new TmxMapLoader().load("sampleMap.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         tiledMapRenderer.render();
+
+        batch = new SpriteBatch();
         initializeCharacter();
+        _FBIC.init(myPlayer.uniqueID);
+        cursor = new Cursor(myPlayer.spriteTint);
+
         Iterator<String> it = tiledMap.getProperties().getKeys();
-        while(it.hasNext()){
+        while (it.hasNext()) {
             System.out.println(it.next());
         }
-        int widthMap = Integer.parseInt(tiledMap.getProperties().get("width")+"");
-        int heightMap = Integer.parseInt(tiledMap.getProperties().get("height")+"");
-        int tilewidth = Integer.parseInt(tiledMap.getProperties().get("tilewidth")+"");
-        int tileheight = Integer.parseInt(tiledMap.getProperties().get("tileheight")+"");
+        int widthMap = Integer.parseInt(tiledMap.getProperties().get("width") + "");
+        int heightMap = Integer.parseInt(tiledMap.getProperties().get("height") + "");
+        int tilewidth = Integer.parseInt(tiledMap.getProperties().get("tilewidth") + "");
+        int tileheight = Integer.parseInt(tiledMap.getProperties().get("tileheight") + "");
 
-        calculatedWidth = widthMap*tilewidth;
-        calculatedHeight = heightMap*tileheight;
+        calculatedWidth = widthMap * tilewidth;
+        calculatedHeight = heightMap * tileheight;
 
         Gdx.input.setInputProcessor(this);
     }
+
     private void initializeCharacter() {
 
-        player =  new Player();
-        player.initializeSprite();
-        batch = player.getBatch();
-        playerSprite = player.getSprite();
-        textureAtlas = player.getTextureAtlas();
-        textureRegion = player.getTextureRegion();
-        playerSprite.setPosition(50, 50);
-
+        myPlayer = new Player();
+        myPlayer.initializeSprite();
+//        batch = player.getBatch();
+        myPlayerSprite = myPlayer.getSprite();
+        textureAtlas = myPlayer.getTextureAtlas();
+        textureRegion = myPlayer.getTextureRegion();
+        myPlayerSprite.setPosition(50, 50);
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 0f, 0f, 0);
+        _FBIC.readDocumentsFromDB();
+
+        detectInput();
+
+        Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
+
         batch.begin();
-        playerSprite.draw(batch);
+
+        if (!lockOnListReadFromDB) {
+            lockOnListReadFromDB = true;
+            for (Player pl : CoreInterfaceClass.allPlayers) {
+//                System.out.println("============ " + pl.uniqueID + " ■ " + pl.getX() + "/" + pl.getY());
+                if (!pl.uniqueID.equals(myPlayer.uniqueID)) {
+                    pl.sprite.draw(batch);
+                }
+            }
+            lockOnListReadFromDB = false;
+        }
+        myPlayerSprite.draw(batch);
+        cursor.draw(batch);
+
         batch.end();
-
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        if (keycode == Input.Keys.LEFT){
-            player.checkSprite("LEFT");
+        return false;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.LEFT) {
+            myPlayer.checkSprite("LEFT");
             System.out.println("LEFT");
-            player.setX(player.getX() - speed);
-            _FBIC.sendXToDB(player.getX());
-            System.out.println("POSITION ====================== " + player.getX());
-            if(player.getX()<SCREEN_WIDTH*1/4) {
-                if(camera.position.x<SCREEN_WIDTH*1/4){
-                    if(player.getX()>0) {
-                        player.setX(player.getX() + speed);
+            myPlayer.setX(myPlayer.getX() - speed);
+            _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
+            System.out.println("POSITION ====================== " + myPlayer.getX());
+            if (myPlayer.getX() < SCREEN_WIDTH * 1 / 4) {
+                if (camera.position.x < SCREEN_WIDTH * 1 / 4) {
+                    if (myPlayer.getX() > 0) {
+                        myPlayer.setX(myPlayer.getX() + speed);
                     }
-                }else{
-                    player.setX(player.getX() + speed);
+                } else {
+                    myPlayer.setX(myPlayer.getX() + speed);
                     camera.position.x -= speed;
                 }
             }
         }
-        if (keycode == Input.Keys.RIGHT){
-            player.checkSprite("RIGHT");
+        if (keycode == Input.Keys.RIGHT) {
+            myPlayer.checkSprite("RIGHT");
             System.out.println("RIGHT");
-            player.setX(player.getX() + speed);
-            _FBIC.sendXToDB(player.getX());
-            System.out.println("POSITION ====================== " + player.getX());
-            if(player.getX()>SCREEN_WIDTH*3/4) {
-                if(camera.position.x>calculatedWidth-SCREEN_WIDTH*1/4){
-                    if(player.getX()<SCREEN_WIDTH) {
-                        player.setX(player.getX() - speed);
+            myPlayer.setX(myPlayer.getX() + speed);
+            _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
+            System.out.println("POSITION ====================== " + myPlayer.getX());
+            if (myPlayer.getX() > SCREEN_WIDTH * 3 / 4) {
+                if (camera.position.x > calculatedWidth - SCREEN_WIDTH * 1 / 4) {
+                    if (myPlayer.getX() < SCREEN_WIDTH) {
+                        myPlayer.setX(myPlayer.getX() - speed);
                     }
-                }else{
-                    player.setX(player.getX() - speed);
+                } else {
+                    myPlayer.setX(myPlayer.getX() - speed);
                     camera.position.x += speed;
                 }
             }
         }
-        if (keycode == Input.Keys.UP){
-            player.checkSprite("UP");
+        if (keycode == Input.Keys.UP) {
+            myPlayer.checkSprite("UP");
             System.out.println("UP");
-            player.setY(player.getY() + speed);
-            _FBIC.sendYToDB(player.getY());
-            System.out.println("POSITION ====================== " + player.getY());
-            if(player.getY()>SCREEN_HEIGHT*3/4) {
-                if(camera.position.y>calculatedHeight-SCREEN_HEIGHT*1/4){
-                    if(player.getY()<SCREEN_HEIGHT) {
-                        player.setY(player.getY() - speed);
+            myPlayer.setY(myPlayer.getY() + speed);
+            _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
+            System.out.println("POSITION ====================== " + myPlayer.getY());
+            if (myPlayer.getY() > SCREEN_HEIGHT * 3 / 4) {
+                if (camera.position.y > calculatedHeight - SCREEN_HEIGHT * 1 / 4) {
+                    if (myPlayer.getY() < SCREEN_HEIGHT) {
+                        myPlayer.setY(myPlayer.getY() - speed);
                     }
-                }else{
-                    player.setY(player.getY() - speed);
+                } else {
+                    myPlayer.setY(myPlayer.getY() - speed);
                     camera.position.y += speed;
                 }
             }
         }
-        if (keycode == Input.Keys.DOWN){
-            player.checkSprite("DOWN");
+        if (keycode == Input.Keys.DOWN) {
+            myPlayer.checkSprite("DOWN");
             System.out.println("DOWN");
-            player.setY(player.getY() - speed);
-            if(player.getY()<SCREEN_HEIGHT*1/4) {
-                if(camera.position.y<SCREEN_HEIGHT*1/4){
-                    if(player.getY()>0) {
-                        player.setY(player.getY() + speed);
-                        _FBIC.sendYToDB(player.getY());
-                        System.out.println("POSITION ====================== " + player.getY());
+            myPlayer.setY(myPlayer.getY() - speed);
+            if (myPlayer.getY() < SCREEN_HEIGHT * 1 / 4) {
+                if (camera.position.y < SCREEN_HEIGHT * 1 / 4) {
+                    if (myPlayer.getY() > 0) {
+                        myPlayer.setY(myPlayer.getY() + speed);
+                        _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
+                        System.out.println("POSITION ====================== " + myPlayer.getY());
                     }
-                }else{
-                    player.setY(player.getY() + speed);
+                } else {
+                    myPlayer.setY(myPlayer.getY() + speed);
                     camera.position.y -= speed;
                 }
             }
@@ -173,36 +200,88 @@ public class libGDXRoguelike extends ApplicationAdapter implements InputProcesso
         }
         System.out.println();
         batch.begin();
-        playerSprite = player.getSprite();
-        playerSprite.draw(batch);
+        myPlayerSprite = myPlayer.getSprite();
+        myPlayerSprite.draw(batch);
         batch.end();
         camera.update();
         return false;
     }
+
     @Override
     public boolean keyTyped(char character) {
         return false;
     }
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         return false;
     }
+
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         return false;
     }
+
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         return false;
     }
+
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         System.out.println("mouseMoved ");
         return false;
     }
+
     @Override
     public boolean scrolled(float amountX, float amountY) {
         System.out.println("scrolled ");
         return false;
+    }
+
+    int speedTouch = 20;
+
+    private void detectInput() {
+        //touch & mouse
+        if (Gdx.input.isTouched()) {
+
+            // get screen position
+            float xTouchPixels = Gdx.input.getX();
+            float yTouchPixels = Gdx.input.getY();
+
+            cursor.setPosition((int) xTouchPixels, SCREEN_HEIGHT - (int) yTouchPixels);
+
+            //convert to world position
+            Vector2 touchPoint = new Vector2(xTouchPixels, SCREEN_HEIGHT - yTouchPixels);
+            //touchPoint = viewport.unproject(touchPoint);
+
+            //calculate x + y differences
+            float touchDistance = touchPoint.dst(new Vector2(myPlayerSprite.getX(), myPlayerSprite.getY()));
+
+//            System.out.println(touchDistance + " ■ detectInput ■ " + xTouchPixels + " / " + yTouchPixels);
+
+            if (touchDistance > 20f) {
+
+                float xTouchDifference = touchPoint.x - myPlayerSprite.getX();
+                float yTouchDifference = touchPoint.y - myPlayerSprite.getY();
+
+                // scale to max speed
+                float xMove = xTouchDifference / touchDistance * speedTouch; //* deltaTime;
+                float yMove = yTouchDifference / touchDistance * speedTouch; // * deltaTime;
+
+//                if (xMove > 0) xMove = Math.min(xMove, rightLimit);
+//                else xMove = Math.max(xMove, leftLimit);
+//
+//                if (yMove > 0) yMove = Math.min(yMove, upLimit);
+//                else yMove = Math.max(yMove, downLimit);
+
+                myPlayerSprite.translate(xMove, yMove);
+                myPlayer.setX(myPlayerSprite.getX());
+                myPlayer.setY(myPlayerSprite.getY());
+                _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
+
+            }
+        }
+
     }
 }

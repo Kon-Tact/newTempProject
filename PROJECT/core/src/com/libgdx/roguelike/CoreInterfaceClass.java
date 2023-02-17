@@ -1,11 +1,21 @@
 package com.libgdx.roguelike;
 
-public class CoreInterfaceClass implements FirebaseInterface{
+import java.util.ArrayList;
+import java.util.List;
 
-    public void sendXToDB(float x) {
+public class CoreInterfaceClass implements FirebaseInterface {
 
-    };
-    public void sendYToDB(float y){
+//    public static List<Player> allPlayers = new ArrayList<>();
 
+    @Override
+    public void readDocumentsFromDB() {
     }
+
+    public void sendToDB(float x, float y) {
+    }
+
+    @Override
+    public void init(String uniqueID) {
+    }
+
 }
