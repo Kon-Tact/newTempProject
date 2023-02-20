@@ -19,4 +19,14 @@
     <servlet-name>Hello</servlet-name>
     <url-pattern>/Hello</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>PlayerPosition</display-name>
+    <servlet-name>PlayerPosition</servlet-name>
+    <servlet-class>PlayerPosition</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PlayerPosition</servlet-name>
+    <url-pattern>/PlayerPosition</url-pattern>
+  </servlet-mapping>
 </web-app>
