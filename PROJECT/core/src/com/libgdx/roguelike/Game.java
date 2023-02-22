@@ -10,10 +10,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.libgdx.entitygestion.Player;
@@ -42,6 +44,14 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 
     FirebaseInterface _FBIC;
     Cursor cursor;
+
+    Joystick joystick;
+
+    ShapeRenderer shapeRenderer;
+    Vector3 mouse;
+
+
+
     public static boolean lockOnListReadFromDB = false;
 
     public Game(FirebaseInterface FBIC) {
@@ -67,6 +77,20 @@ public class Game extends ApplicationAdapter implements InputProcessor {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
 
+        mouse = new Vector3();
+
+
+
+    joystick = new Joystick(100,100,200);
+
+
+
+
+        shapeRenderer=new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(camera.combined);
+
+
+
         TiledMap tempTiledMap = new TmxMapLoader().load("sampleMap.tmx");
         map = new Map(tempTiledMap,new OrthogonalTiledMapRenderer(tempTiledMap));
 
@@ -90,6 +114,8 @@ public class Game extends ApplicationAdapter implements InputProcessor {
         calculatedHeight = heightMap * tileheight;
 
         Gdx.input.setInputProcessor(this);
+
+
     }
 
     private void initializeCharacter() {
@@ -103,8 +129,11 @@ public class Game extends ApplicationAdapter implements InputProcessor {
         myPlayerSprite.setPosition(50, 50);
     }
 
+
+
     @Override
     public void render() {
+        update();
         _FBIC.readDocumentsFromDB();
 
         detectInput();
@@ -131,15 +160,24 @@ public class Game extends ApplicationAdapter implements InputProcessor {
         cursor.draw(batch);
 
         batch.end();
+
+        joystick.render(shapeRenderer);
+
     }
 
     @Override
     public boolean keyUp(int keycode) {
+
+        //enlever joystick
+        //
+        //
         return false;
     }
 
     @Override
     public boolean keyDown(int keycode) {
+  //
+        //afficahe joystick
         if (keycode == Input.Keys.LEFT) {
             myPlayer.checkSprite("LEFT");
             System.out.println("LEFT");
@@ -254,45 +292,59 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 
     private void detectInput() {
         //touch & mouse
-        if (Gdx.input.isTouched()) {
-
-            // get screen position
-            float xTouchPixels = Gdx.input.getX();
-            float yTouchPixels = Gdx.input.getY();
-
-            cursor.setPosition((int) xTouchPixels, SCREEN_HEIGHT - (int) yTouchPixels);
-
-            //convert to world position
-            Vector2 touchPoint = new Vector2(xTouchPixels, SCREEN_HEIGHT - yTouchPixels);
-            //touchPoint = viewport.unproject(touchPoint);
-
-            //calculate x + y differences
-            float touchDistance = touchPoint.dst(new Vector2(myPlayerSprite.getX(), myPlayerSprite.getY()));
-
-//            System.out.println(touchDistance + " ■ detectInput ■ " + xTouchPixels + " / " + yTouchPixels);
-
-            if (touchDistance > 20f) {
-
-                float xTouchDifference = touchPoint.x - myPlayerSprite.getX();
-                float yTouchDifference = touchPoint.y - myPlayerSprite.getY();
-
-                // scale to max speed
-                float xMove = xTouchDifference / touchDistance * speedTouch; //* deltaTime;
-                float yMove = yTouchDifference / touchDistance * speedTouch; // * deltaTime;
-
-//                if (xMove > 0) xMove = Math.min(xMove, rightLimit);
-//                else xMove = Math.max(xMove, leftLimit);
+//        if (Gdx.input.isTouched()) {
 //
-//                if (yMove > 0) yMove = Math.min(yMove, upLimit);
-//                else yMove = Math.max(yMove, downLimit);
+//            // get screen position
+//            float xTouchPixels = Gdx.input.getX();
+//            float yTouchPixels = Gdx.input.getY();
+//
+//            cursor.setPosition((int) xTouchPixels, SCREEN_HEIGHT - (int) yTouchPixels);
+//
+//            //convert to world position
+//            Vector2 touchPoint = new Vector2(xTouchPixels, SCREEN_HEIGHT - yTouchPixels);
+//            //touchPoint = viewport.unproject(touchPoint);
+//
+//            //calculate x + y differences
+//            float touchDistance = touchPoint.dst(new Vector2(myPlayerSprite.getX(), myPlayerSprite.getY()));
+//
+////            System.out.println(touchDistance + " ■ detectInput ■ " + xTouchPixels + " / " + yTouchPixels);
+//
+//            if (touchDistance > 20f) {
+//
+//                float xTouchDifference = touchPoint.x - myPlayerSprite.getX();
+//                float yTouchDifference = touchPoint.y - myPlayerSprite.getY();
+//
+//                // scale to max speed
+//                float xMove = xTouchDifference / touchDistance * speedTouch; //* deltaTime;
+//                float yMove = yTouchDifference / touchDistance * speedTouch; // * deltaTime;
+//
+////                if (xMove > 0) xMove = Math.min(xMove, rightLimit);
+////                else xMove = Math.max(xMove, leftLimit);
+////
+////                if (yMove > 0) yMove = Math.min(yMove, upLimit);
+////                else yMove = Math.max(yMove, downLimit);
+//
+//                myPlayerSprite.translate(xMove, yMove);
+//                myPlayer.setX(myPlayerSprite.getX());
+//                myPlayer.setY(myPlayerSprite.getY());
+//                _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
+//
+//            }
+//        }
 
-                myPlayerSprite.translate(xMove, yMove);
-                myPlayer.setX(myPlayerSprite.getX());
-                myPlayer.setY(myPlayerSprite.getY());
-                _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
+    }
+    @Override
+    public void dispose(){
+        batch.dispose();
+        shapeRenderer.dispose();
+    }
 
-            }
+
+    public void update(){
+
+        if(Gdx.input.isTouched(0)) {
+            camera.unproject(mouse.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+            joystick.update(mouse.x, mouse.y);
         }
-
     }
 }
