@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -65,8 +66,10 @@ public class Game extends ApplicationAdapter implements InputProcessor {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
-        map.setTiledMap( new TmxMapLoader().load("sampleMap.tmx"));
-        map.setTiledMapRenderer(new OrthogonalTiledMapRenderer(map.getTiledMap()));
+
+        TiledMap tempTiledMap = new TmxMapLoader().load("sampleMap.tmx");
+        map = new Map(tempTiledMap,new OrthogonalTiledMapRenderer(tempTiledMap));
+
         map.tiledMapRenderer.render();
 
         batch = new SpriteBatch();
@@ -143,8 +146,8 @@ public class Game extends ApplicationAdapter implements InputProcessor {
             myPlayer.setX(myPlayer.getX() - speed);
             _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
             System.out.println("POSITION ====================== " + myPlayer.getX());
-            if (myPlayer.getX() < SCREEN_WIDTH * 1 / 4) {
-                if (camera.position.x < SCREEN_WIDTH * 1 / 4) {
+            if (myPlayer.getX() < SCREEN_WIDTH * 1.0 / 4.0) {
+                if (camera.position.x < SCREEN_WIDTH * 1.0 / 4.0) {
                     if (myPlayer.getX() > 0) {
                         myPlayer.setX(myPlayer.getX() + speed);
                     }
@@ -160,8 +163,8 @@ public class Game extends ApplicationAdapter implements InputProcessor {
             myPlayer.setX(myPlayer.getX() + speed);
             _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
             System.out.println("POSITION ====================== " + myPlayer.getX());
-            if (myPlayer.getX() > SCREEN_WIDTH * 3 / 4) {
-                if (camera.position.x > calculatedWidth - SCREEN_WIDTH * 1 / 4) {
+            if (myPlayer.getX() > SCREEN_WIDTH * 3.0 / 4.0) {
+                if (camera.position.x > calculatedWidth - SCREEN_WIDTH * 1.0 / 4.0) {
                     if (myPlayer.getX() < SCREEN_WIDTH) {
                         myPlayer.setX(myPlayer.getX() - speed);
                     }
@@ -177,8 +180,8 @@ public class Game extends ApplicationAdapter implements InputProcessor {
             myPlayer.setY(myPlayer.getY() + speed);
             _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
             System.out.println("POSITION ====================== " + myPlayer.getY());
-            if (myPlayer.getY() > SCREEN_HEIGHT * 3 / 4) {
-                if (camera.position.y > calculatedHeight - SCREEN_HEIGHT * 1 / 4) {
+            if (myPlayer.getY() > SCREEN_HEIGHT * 3.0 / 4.0) {
+                if (camera.position.y > calculatedHeight - SCREEN_HEIGHT * 1.0 / 4.0) {
                     if (myPlayer.getY() < SCREEN_HEIGHT) {
                         myPlayer.setY(myPlayer.getY() - speed);
                     }
@@ -192,8 +195,8 @@ public class Game extends ApplicationAdapter implements InputProcessor {
             myPlayer.checkSprite("DOWN");
             System.out.println("DOWN");
             myPlayer.setY(myPlayer.getY() - speed);
-            if (myPlayer.getY() < SCREEN_HEIGHT * 1 / 4) {
-                if (camera.position.y < SCREEN_HEIGHT * 1 / 4) {
+            if (myPlayer.getY() < SCREEN_HEIGHT * 1.0 / 4.0) {
+                if (camera.position.y < SCREEN_HEIGHT * 1.0 / 4.0) {
                     if (myPlayer.getY() > 0) {
                         myPlayer.setY(myPlayer.getY() + speed);
                         _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());

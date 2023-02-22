@@ -8,6 +8,14 @@ public class Map {
     TiledMap tiledMap;
 
     TiledMapRenderer tiledMapRenderer;
+    public Map(TiledMap tiledMap) {
+        this(tiledMap, null);
+    }
+    public Map(TiledMap tiledMap, TiledMapRenderer tiledMapRenderer) {
+        this.tiledMap = tiledMap;
+        this.tiledMapRenderer = tiledMapRenderer;
+    }
+
 
     public TiledMap getTiledMap() {
         return tiledMap;
