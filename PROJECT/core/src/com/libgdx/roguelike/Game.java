@@ -25,6 +25,7 @@ import java.util.Iterator;
 
 public class Game extends ApplicationAdapter implements InputProcessor {
 
+    boolean display=false;
     Map map;
 //    TiledMap tiledMap;
 //    TiledMapRenderer tiledMapRenderer;
@@ -61,6 +62,10 @@ public class Game extends ApplicationAdapter implements InputProcessor {
     public Game() {
     }
 
+
+
+
+
     @Override
     public void resize(int width, int height) {
         // viewport.update(width, height);
@@ -77,17 +82,15 @@ public class Game extends ApplicationAdapter implements InputProcessor {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
 
+
+
+
         mouse = new Vector3();
 
 
-
-    joystick = new Joystick(100,100,200);
-
-
-
-
+        joystick = new Joystick(100,100,200);
         shapeRenderer=new ShapeRenderer();
-        shapeRenderer.setProjectionMatrix(camera.combined);
+
 
 
 
@@ -133,6 +136,16 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public void render() {
+
+        if(Gdx.input.isTouched(0)){
+         display = true;
+
+        }else{
+            display = false;
+        }
+
+
+
         update();
         _FBIC.readDocumentsFromDB();
 
@@ -161,12 +174,34 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 
         batch.end();
 
-        joystick.render(shapeRenderer);
+ //       joystick.render(shapeRenderer);
+
+     //   System.out.println("display "  +display);
+        if(this.display){
+            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
+            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
+            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
+            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
+            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
+            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
+            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
+            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
+            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
+            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
+            joystick.render(shapeRenderer);
+        }
+
+
 
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        display =false;
+        System.out.println("KEYUP    " );
+        System.out.println("KEYUP    " );
+        System.out.println("KEYUP    " );
+        shapeRenderer.flush();
 
         //enlever joystick
         //
@@ -176,6 +211,11 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        System.out.println("KEYDOWN    " );
+        System.out.println("KEYDOWN    " );
+        System.out.println("KEYDOWN    " );
+        display =true;
+
   //
         //afficahe joystick
         if (keycode == Input.Keys.LEFT) {
