@@ -3,7 +3,7 @@ package com.libgdx.roguelike.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.libgdx.roguelike.libGDXRoguelike;
+import com.libgdx.roguelike.Game;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -17,6 +17,6 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
-                return new libGDXRoguelike();
+                return new Game();
         }
 }

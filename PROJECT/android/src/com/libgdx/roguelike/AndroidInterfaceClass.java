@@ -12,6 +12,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.libgdx.entitygestion.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,39 +64,39 @@ public class AndroidInterfaceClass implements FirebaseInterface {
 
     @Override
     public void readDocumentsFromDB() {
-
-        dbCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                List<Player> list = new ArrayList<>();
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-
-                        Player aPlayer = new Player(document.getId(),
-                                //new Vector2(Float.parseFloat(document.getString("x")), Float.parseFloat(document.getString("y"))));
-                                new Vector2(document.getLong("x"), document.getLong("y")));
-                        list.add(aPlayer);
-                    }
-
-                    if (!libGDXRoguelike.lockOnListReadFromDB) {
-
-                        //--------------------------------------------------------------------
-                        libGDXRoguelike.lockOnListReadFromDB = true;
-                        allPlayers.clear();
-                        allPlayers.addAll(list);
-                        libGDXRoguelike.lockOnListReadFromDB = false;
-                        //--------------------------------------------------------------------
-
-                        //                    libGDXRoguelike.lockOnListReadFromDB = true;
-                        //                    documents.clear();
-                        //                    documents.addAll(list);
-                        //                    libGDXRoguelike.lockOnListReadFromDB = false;
-                    }
-                }
-            }
-        });
+//
+//        dbCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//
+//                List<Player> list = new ArrayList<>();
+//                if (task.isSuccessful()) {
+//                    for (QueryDocumentSnapshot document : task.getResult()) {
+//
+//                        Player aPlayer = new Player(document.getId(),
+//                                //new Vector2(Float.parseFloat(document.getString("x")), Float.parseFloat(document.getString("y"))));
+//                                new Vector2(document.getLong("x"), document.getLong("y")));
+//                        list.add(aPlayer);
+//                    }
+//
+//                    if (!libGDXRoguelike.lockOnListReadFromDB) {
+//
+//                        //--------------------------------------------------------------------
+//                        libGDXRoguelike.lockOnListReadFromDB = true;
+//                        allPlayers.clear();
+//                        allPlayers.addAll(list);
+//                        libGDXRoguelike.lockOnListReadFromDB = false;
+//                        //--------------------------------------------------------------------
+//
+//                        //                    libGDXRoguelike.lockOnListReadFromDB = true;
+//                        //                    documents.clear();
+//                        //                    documents.addAll(list);
+//                        //                    libGDXRoguelike.lockOnListReadFromDB = false;
+//                    }
+//                }
+//            }
+//        });
 
     }
 

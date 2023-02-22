@@ -10,21 +10,23 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.libgdx.entitygestion.Player;
 
 import java.util.Iterator;
 
 
-public class libGDXRoguelike extends ApplicationAdapter implements InputProcessor {
-    TiledMap tiledMap;
+public class Game extends ApplicationAdapter implements InputProcessor {
+
+    Map map;
+//    TiledMap tiledMap;
+//    TiledMapRenderer tiledMapRenderer;
+
     OrthographicCamera camera;
-    TiledMapRenderer tiledMapRenderer;
     Viewport viewport;
     int SCREEN_WIDTH = 0;
     int SCREEN_HEIGHT = 0;
@@ -41,8 +43,11 @@ public class libGDXRoguelike extends ApplicationAdapter implements InputProcesso
     Cursor cursor;
     public static boolean lockOnListReadFromDB = false;
 
-    public libGDXRoguelike(FirebaseInterface FBIC) {
+    public Game(FirebaseInterface FBIC) {
         _FBIC = FBIC;
+    }
+
+    public Game() {
     }
 
     @Override
@@ -52,28 +57,31 @@ public class libGDXRoguelike extends ApplicationAdapter implements InputProcesso
 
     @Override
     public void create() {
+
+
+
         SCREEN_WIDTH = Gdx.graphics.getWidth();
         SCREEN_HEIGHT = Gdx.graphics.getHeight();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
-        tiledMap = new TmxMapLoader().load("sampleMap.tmx");
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-        tiledMapRenderer.render();
+        map.setTiledMap( new TmxMapLoader().load("sampleMap.tmx"));
+        map.setTiledMapRenderer(new OrthogonalTiledMapRenderer(map.getTiledMap()));
+        map.tiledMapRenderer.render();
 
         batch = new SpriteBatch();
         initializeCharacter();
         _FBIC.init(myPlayer.uniqueID);
         cursor = new Cursor(myPlayer.spriteTint);
 
-        Iterator<String> it = tiledMap.getProperties().getKeys();
+        Iterator<String> it = map.getTiledMap().getProperties().getKeys();
         while (it.hasNext()) {
             System.out.println(it.next());
         }
-        int widthMap = Integer.parseInt(tiledMap.getProperties().get("width") + "");
-        int heightMap = Integer.parseInt(tiledMap.getProperties().get("height") + "");
-        int tilewidth = Integer.parseInt(tiledMap.getProperties().get("tilewidth") + "");
-        int tileheight = Integer.parseInt(tiledMap.getProperties().get("tileheight") + "");
+        int widthMap = Integer.parseInt(map.getTiledMap().getProperties().get("width") + "");
+        int heightMap = Integer.parseInt(map.getTiledMap().getProperties().get("height") + "");
+        int tilewidth = Integer.parseInt(map.getTiledMap().getProperties().get("tilewidth") + "");
+        int tileheight = Integer.parseInt(map.getTiledMap().getProperties().get("tileheight") + "");
 
         calculatedWidth = widthMap * tilewidth;
         calculatedHeight = heightMap * tileheight;
@@ -101,8 +109,8 @@ public class libGDXRoguelike extends ApplicationAdapter implements InputProcesso
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        tiledMapRenderer.setView(camera);
-        tiledMapRenderer.render();
+        map.getTiledMapRenderer().setView(camera);
+        map.getTiledMapRenderer().render();
 
         batch.begin();
 

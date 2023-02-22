@@ -1,5 +1,7 @@
 package com.libgdx.roguelike;
 
+import com.libgdx.entitygestion.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 

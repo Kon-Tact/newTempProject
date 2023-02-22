@@ -1,4 +1,4 @@
-package com.libgdx.roguelike;
+package com.libgdx.entitygestion;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 
-public class Player {
+public class Player implements Entity{
     int compteurUp = 0;
     int compteurDown = 0;
     int compteurLeft = 0;
@@ -28,6 +28,7 @@ public class Player {
     public Color spriteTint; // from unique ID
 
     public Player() {
+
         final int R = 10 + (int) (Math.random() * 90);
         final int V = 10 + (int) (Math.random() * 90);
         final int B = 10 + (int) (Math.random() * 90);
@@ -37,8 +38,9 @@ public class Player {
         System.out.println(uniqueID + " ■■■■■■■■■■■");
     }
 
-    public Player(String id, Vector2 xy) {
-        uniqueID = id;
+    public Player(Vector2 xy) {
+
+        uniqueID = genID();
         int R = Integer.parseInt(uniqueID.substring(6, 8));
         int V = Integer.parseInt(uniqueID.substring(8, 10));
         int B = Integer.parseInt(uniqueID.substring(10, 12));
@@ -46,9 +48,13 @@ public class Player {
         spriteTint = new Color((float) R / 100, (float) V / 100, (float) B / 100, 1);
 
         initializeSprite(); // HERE
-
         setX(xy.x);
         setY(xy.y);
+
+    }
+
+    private String genID() {
+        return "0";
     }
 
     public void initializeSprite() {
