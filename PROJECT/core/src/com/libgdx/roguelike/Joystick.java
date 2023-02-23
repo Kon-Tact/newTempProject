@@ -1,5 +1,6 @@
 package com.libgdx.roguelike;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 
@@ -10,6 +11,9 @@ public class Joystick {
     boolean positionFixe = false;
 
 
+    int directionInput = -1;
+
+
     public Joystick(float x, float y, float radius ){
         circle0 = new Circle(x,y,radius);
         circle1 = new Circle(x,y,radius/5.0f);
@@ -18,8 +22,31 @@ public class Joystick {
     public void update(float x, float y){
         if(circle0.contains(x,y)){
             circle1.setPosition(x,y);
+            double deltaX = circle1.x-circle0.x;
+            double deltaY = circle1.y-circle0.y;
+            double angle = Math.toDegrees(Math.atan2(deltaY,deltaX));
+
+
+            if(-45<angle && angle<45){
+                directionInput = Input.Keys.RIGHT;
+            }
+            if(45<angle && angle<135){
+                directionInput = Input.Keys.UP;
+            }
+            if(angle<-135 || angle>135){
+                directionInput = Input.Keys.LEFT;
+            }
+            if(-135<angle && angle<-45){
+                directionInput = Input.Keys.DOWN;
+            }
+
+            System.out.println("atan2 " + angle);
+        }else{
+            directionInput = -1;
         }
+
     }
+
 
     public void render(ShapeRenderer renderer){
         renderer.begin(ShapeRenderer.ShapeType.Line);
@@ -58,5 +85,13 @@ public class Joystick {
 
     public void setPositionFixe(boolean positionFixe) {
         this.positionFixe = positionFixe;
+    }
+
+    public int getDirectionInput() {
+        return directionInput;
+    }
+
+    public void setDirectionInput(int directionInput) {
+        this.directionInput = directionInput;
     }
 }
