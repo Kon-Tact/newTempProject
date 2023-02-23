@@ -32,7 +32,7 @@ public class Item implements Entity{
     }
 
     @Override
-    public void checkSprite(String string) {
+    public void animate(String string) {
 
     }
 }

@@ -211,7 +211,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 
     private void movePlayer(int keycode) {
         if (keycode == Input.Keys.LEFT) {
-           myPlayer.checkSprite("LEFT");
+           myPlayer.animate("LEFT");
              myPlayer.setX(myPlayer.getX() - sizeOfStep);
             _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
             if (myPlayer.getX() < SCREEN_WIDTH * 1.0 / 4.0) {
@@ -228,7 +228,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
             }
         }
         if (keycode == Input.Keys.RIGHT) {
-            myPlayer.checkSprite("RIGHT");
+            myPlayer.animate("RIGHT");
         //    System.out.println("RIGHT");
             myPlayer.setX(myPlayer.getX() + sizeOfStep);
             _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
@@ -245,7 +245,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
             }
         }
         if (keycode == Input.Keys.UP) {
-            myPlayer.checkSprite("UP");
+            myPlayer.animate("UP");
          //   System.out.println("UP");
             myPlayer.setY(myPlayer.getY() + sizeOfStep);
             _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
@@ -262,7 +262,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
             }
         }
         if (keycode == Input.Keys.DOWN) {
-            myPlayer.checkSprite("DOWN");
+            myPlayer.animate("DOWN");
             myPlayer.setY(myPlayer.getY() - sizeOfStep);
             if (myPlayer.getY() < SCREEN_HEIGHT * 1.0 / 4.0) {
                 if (camera.position.y < SCREEN_HEIGHT * 1.0 / 4.0) {

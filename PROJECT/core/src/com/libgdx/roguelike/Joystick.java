@@ -31,7 +31,6 @@ public class Joystick {
             y = (float) (circle0.y+deltaY0*ratio);
         }
 
-        if(circle0.contains(x,y)){
             circle1.setPosition(x,y);
             double deltaX = circle1.x-circle0.x;
             double deltaY = circle1.y-circle0.y;
@@ -54,7 +53,6 @@ public class Joystick {
         }
 
 
-    }
 
 
     public void render(ShapeRenderer renderer){

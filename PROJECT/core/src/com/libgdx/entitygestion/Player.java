@@ -110,7 +110,7 @@ public class Player implements Entity{
         this.sprite = sprite;
     }
 
-    public void checkSprite(String string) {
+    public void animate(String string) {
         float tempSpriteX = sprite.getX();
         float tempSpriteY = sprite.getY();
 
