@@ -115,7 +115,7 @@ public class Player implements Entity{
         float tempSpriteY = sprite.getY();
 
         if (string.contentEquals("LEFT")) {
-            System.out.println("SWITCH LEFT " + compteurLeft);
+        //    System.out.println("SWITCH LEFT " + compteurLeft);
             if (compteurLeft == 12) {
                 compteurLeft = 0;
             }
@@ -127,7 +127,7 @@ public class Player implements Entity{
         }
 
         if (string.contentEquals("RIGHT")) {
-            System.out.println("SWITCH RIGHT " + compteurRight);
+       //     System.out.println("SWITCH RIGHT " + compteurRight);
             if (compteurRight == 12) {
                 compteurRight = 0;
             }
@@ -139,7 +139,7 @@ public class Player implements Entity{
         }
 
         if (string.contentEquals("UP")) {
-            System.out.println("SWITCH UP " + compteurUp);
+       //     System.out.println("SWITCH UP " + compteurUp);
             if (compteurUp == 12) {
                 compteurUp = 0;
             }
@@ -151,7 +151,7 @@ public class Player implements Entity{
         }
 
         if (string.contentEquals("DOWN")) {
-            System.out.println("SWITCH DOWN " + compteurDown);
+      //      System.out.println("SWITCH DOWN " + compteurDown);
             if (compteurDown == 12) {
                 compteurDown = 0;
             }

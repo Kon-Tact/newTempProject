@@ -15,8 +15,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -31,7 +29,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 
 
     int refreshValue = 0;
-    int refreshValueTrigger = 5;//20;
+    int speedOfSprite = 5;//Plus c'est grand plus c'est lent
 
     Map map;
 //    TiledMap tiledMap;
@@ -46,7 +44,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
     Sprite myPlayerSprite;
     Player myPlayer;
     TextureRegion textureRegion;
-    int speed = 80;
+    int sizeOfStep = 10;
     int calculatedWidth = 0;
     int calculatedHeight = 0;
 
@@ -145,22 +143,19 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 
 
         displayJoystick();
-     //   if(joystick.getDirectionInput()!=-1){
-//        System.out.print("refreshValue   " + refreshValue);
-//        System.out.println("    refreshValueTrigger   " + refreshValueTrigger);
         if(Gdx.input.isTouched(0) ) {
             refreshValue++;
-            if(refreshValue==refreshValueTrigger){
-//                System.out.println("mdddddddddqsljdpoqjdqp");
-//                System.out.println("mdddddddddqsljdpoqjdqp");
-//                System.out.println("mdddddddddqsljdpoqjdqp");
-//                System.out.println("mdddddddddqsljdpoqjdqp");
+              if(refreshValue==speedOfSprite){
+
                 refreshValue=0;
-//                movePlayer(joystick.getDirectionInput());
+                movePlayer(joystick.getDirectionInput());
             }
 
         }
-      //  }
+        else{
+
+            display = false;
+        }
 
 
         Gdx.gl.glClearColor(0, 0, 0, 0);
@@ -191,10 +186,8 @@ public class Game extends ApplicationAdapter implements InputProcessor {
                 }
             }
             display = true;
-        }else{
-            joystick.setDirectionInput(-1);
-            display = false;
         }
+
         update();
     }
 
@@ -219,97 +212,77 @@ public class Game extends ApplicationAdapter implements InputProcessor {
     private void movePlayer(int keycode) {
         if (keycode == Input.Keys.LEFT) {
            myPlayer.checkSprite("LEFT");
-           System.out.println("LEFT");
-                myPlayer.setX(myPlayer.getX() - speed);
+             myPlayer.setX(myPlayer.getX() - sizeOfStep);
             _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
-            System.out.println("POSITION ====================== " + myPlayer.getX());
             if (myPlayer.getX() < SCREEN_WIDTH * 1.0 / 4.0) {
                 if (camera.position.x < SCREEN_WIDTH * 1.0 / 4.0) {
                     if (myPlayer.getX() > 0) {
-                        myPlayer.setX(myPlayer.getX() + speed);
+                        myPlayer.setX(myPlayer.getX() + sizeOfStep);
                     }
                 } else {
-                    myPlayer.setX(myPlayer.getX() + speed);
+                    myPlayer.setX(myPlayer.getX() + sizeOfStep);
 
-                    camera.position.x -= speed;
+                    camera.position.x -= sizeOfStep;
 
                 }
             }
         }
         if (keycode == Input.Keys.RIGHT) {
             myPlayer.checkSprite("RIGHT");
-            System.out.println("RIGHT");
-            myPlayer.setX(myPlayer.getX() + speed);
+        //    System.out.println("RIGHT");
+            myPlayer.setX(myPlayer.getX() + sizeOfStep);
             _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
-            System.out.println("POSITION ====================== " + myPlayer.getX());
+         //   System.out.println("POSITION ====================== " + myPlayer.getX());
             if (myPlayer.getX() > SCREEN_WIDTH * 3.0 / 4.0) {
                 if (camera.position.x > calculatedWidth - SCREEN_WIDTH * 1.0 / 4.0) {
                     if (myPlayer.getX() < SCREEN_WIDTH) {
-                        myPlayer.setX(myPlayer.getX() - speed);
+                        myPlayer.setX(myPlayer.getX() - sizeOfStep);
                     }
                 } else {
-                    myPlayer.setX(myPlayer.getX() - speed);
-                    camera.position.x += speed;
+                    myPlayer.setX(myPlayer.getX() - sizeOfStep);
+                    camera.position.x += sizeOfStep;
                 }
             }
         }
         if (keycode == Input.Keys.UP) {
             myPlayer.checkSprite("UP");
-            System.out.println("UP");
-            myPlayer.setY(myPlayer.getY() + speed);
+         //   System.out.println("UP");
+            myPlayer.setY(myPlayer.getY() + sizeOfStep);
             _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
-            System.out.println("POSITION ====================== " + myPlayer.getY());
+        //    System.out.println("POSITION ====================== " + myPlayer.getY());
             if (myPlayer.getY() > SCREEN_HEIGHT * 3.0 / 4.0) {
                 if (camera.position.y > calculatedHeight - SCREEN_HEIGHT * 1.0 / 4.0) {
                     if (myPlayer.getY() < SCREEN_HEIGHT) {
-                        myPlayer.setY(myPlayer.getY() - speed);
+                        myPlayer.setY(myPlayer.getY() - sizeOfStep);
                     }
                 } else {
-                    myPlayer.setY(myPlayer.getY() - speed);
-                    camera.position.y += speed;
+                    myPlayer.setY(myPlayer.getY() - sizeOfStep);
+                    camera.position.y += sizeOfStep;
                 }
             }
         }
         if (keycode == Input.Keys.DOWN) {
             myPlayer.checkSprite("DOWN");
-            System.out.println("DOWN");
-            myPlayer.setY(myPlayer.getY() - speed);
+            myPlayer.setY(myPlayer.getY() - sizeOfStep);
             if (myPlayer.getY() < SCREEN_HEIGHT * 1.0 / 4.0) {
                 if (camera.position.y < SCREEN_HEIGHT * 1.0 / 4.0) {
                     if (myPlayer.getY() > 0) {
-                        myPlayer.setY(myPlayer.getY() + speed);
+                        myPlayer.setY(myPlayer.getY() + sizeOfStep);
                         _FBIC.sendToDB(myPlayer.getX(), myPlayer.getY());
-                        System.out.println("POSITION ====================== " + myPlayer.getY());
+               //         System.out.println("POSITION ====================== " + myPlayer.getY());
                     }
                 } else {
-                    myPlayer.setY(myPlayer.getY() + speed);
-                    camera.position.y -= speed;
+                    myPlayer.setY(myPlayer.getY() + sizeOfStep);
+                    camera.position.y -= sizeOfStep;
                 }
             }
-
         }
-        System.out.println();
         batch.begin();
         myPlayerSprite = myPlayer.getSprite();
         myPlayerSprite.draw(batch);
         batch.end();
-      //
-         camera.update();
-
-
- //         Vector3 tmp =  new Vector3();
-
-//        camera.projection.setToOrtho(camera.zoom * -camera.viewportWidth / 2, camera.zoom * (camera.viewportWidth / 2), camera.zoom * -(camera.viewportHeight / 2),
-//                camera.zoom * camera.viewportHeight / 2, camera.near, camera.far);
-   //     camera.view.setToLookAt(camera.position, tmp.set(camera.position).add(camera.direction), camera.up);
-//        camera.combined.set(camera.projection);
-//        Matrix4.mul(camera.combined.val, camera.view.val);
-//
-// //       if (updateFrustum) {
-//            camera.invProjectionView.set(camera.combined);
-//            Matrix4.inv(camera.invProjectionView.val);
-//        camera.frustum.update(camera.invProjectionView);
-  //     }
+        //FALSE permet de ne pas reset certains paramètres
+        camera.update(false);
     }
 
     @Override
@@ -335,6 +308,10 @@ public class Game extends ApplicationAdapter implements InputProcessor {
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         System.out.println("mouseMoved ");
+        System.out.println("mouseMoved ");
+        System.out.println("mouseMoved ");
+        System.out.println("mouseMoved ");
+
         return false;
     }
 
@@ -343,10 +320,6 @@ public class Game extends ApplicationAdapter implements InputProcessor {
         System.out.println("scrolled ");
         return false;
     }
-
-    int speedTouch = 20;
-
-
     @Override
     public void dispose(){
         batch.dispose();
@@ -356,9 +329,8 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 
     public void update(){
         Vector3 vector = new Vector3();
-        if(Gdx.input.isTouched(0)) {
-            camera.unproject(vector.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-            joystick.update(vector.x, vector.y);
-        }
+        camera.unproject(vector.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+        joystick.update(vector.x, vector.y);
+
     }
 }

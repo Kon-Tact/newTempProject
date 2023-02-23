@@ -40,10 +40,8 @@ public class Joystick {
                 directionInput = Input.Keys.DOWN;
             }
 
-            System.out.println("atan2 " + angle);
-        }else{
-            directionInput = -1;
         }
+
 
     }
 
