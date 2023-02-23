@@ -29,7 +29,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 
 
     int refreshValue = 0;
-    int speedOfSprite = 5;//Plus c'est grand plus c'est lent
+    int speedOfSprite = 3;//Plus c'est grand plus c'est lent
 
     Map map;
 //    TiledMap tiledMap;
@@ -44,7 +44,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
     Sprite myPlayerSprite;
     Player myPlayer;
     TextureRegion textureRegion;
-    int sizeOfStep = 10;
+    int sizeOfStep = 40;
     int calculatedWidth = 0;
     int calculatedHeight = 0;
 
