@@ -1,5 +1,6 @@
 package com.libgdx.roguelike;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
@@ -20,6 +21,16 @@ public class Joystick {
     }
 
     public void update(float x, float y){
+        float deltaX0 = x-circle0.x;
+        float deltaY0 = y-circle0.y;
+        double radius0 = Math.sqrt(deltaX0*deltaX0+deltaY0*deltaY0);
+        double deltaRadius0 = circle0.radius - radius0;
+        if(deltaRadius0<0){
+            double ratio  = circle0.radius/radius0;
+            x = (float) (circle0.x+deltaX0*ratio);
+            y = (float) (circle0.y+deltaY0*ratio);
+        }
+
         if(circle0.contains(x,y)){
             circle1.setPosition(x,y);
             double deltaX = circle1.x-circle0.x;
