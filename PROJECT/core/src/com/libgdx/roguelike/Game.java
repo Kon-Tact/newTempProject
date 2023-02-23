@@ -138,8 +138,13 @@ public class Game extends ApplicationAdapter implements InputProcessor {
     public void render() {
 
         if(Gdx.input.isTouched(0)){
-         display = true;
+            if(!display){
+                if(!joystick.isPositionFixe()){
+                    joystick.setPosition(Gdx.input.getX(0),SCREEN_HEIGHT-Gdx.input.getY(0));
+                }
 
+            }
+            display = true;
         }else{
             display = false;
         }
@@ -177,18 +182,8 @@ public class Game extends ApplicationAdapter implements InputProcessor {
  //       joystick.render(shapeRenderer);
 
      //   System.out.println("display "  +display);
-        if(this.display){
-            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
-            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
-            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
-            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
-            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
-            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
-            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
-            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
-            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
-            System.out.println("REEEEEEEENNNNNNNDDDDDDERRRRRRRRR   display "  +display);
-            joystick.render(shapeRenderer);
+        if(display){
+           joystick.render(shapeRenderer);
         }
 
 
