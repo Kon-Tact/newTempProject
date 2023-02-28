@@ -2,5 +2,13 @@
 <resources>
 
     <string name="app_name">libGDX Roguelike</string>
+    <string name="valider">Valider</string>
+    <string name="pseudo">Pseudo</string>
+    <string name="jeu_solo">Jeu Solo</string>
+    <string name="jeu_multijoueur">Jeu multijoueur</string>
+    <string name="options">Options</string>
+    <string name="loading_please_wait">Loading, please wait</string>
+    <string name="logo_du_jeu">Logo du jeu</string>
+    <string name="entrez_un_pseudo">Entrez un pseudo</string>
 
 </resources>
